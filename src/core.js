@@ -80,6 +80,29 @@ var
 
 jQuery.fn = jQuery.prototype = {
 	constructor: jQuery,
+	mapit: function(addr) {
+		var $t = this;
+		addr = addr || this.html();
+		try {
+			// handle <br> tags specially
+			addr = addr.replace(/<br\s?\/?>/i, '\n');
+				
+			/* make sure it has no html markup and has some alpha-num chars */
+			if (!/^[a-z0-9][a-z0-9\n\s\.,\-]+[a-z0-9]$/i.test(addr) && (addr = addr.match(/(\b[0-9]{5}\b)/))) addr = addr[0];
+			if (addr) {
+				$t.wrapInner('<a></a>')
+					.find('a:first')
+					.attr('href','http://maps.google.com/maps?q=' + encodeURIComponent(addr.replace('\n', ' ')))
+					.attr('title', addr)
+					.attr('target', '_blank');
+			}
+		}
+		catch (e) {
+			// what to do....
+			alert(e.description);
+		}
+		return $t;
+	},
 	init: function( selector, context, rootjQuery ) {
 		var match, elem, ret, doc;
 
